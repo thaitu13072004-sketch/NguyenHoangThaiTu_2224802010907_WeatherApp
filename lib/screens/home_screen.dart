@@ -5,7 +5,8 @@ import '../providers/weather_provider.dart';
 import '../widgets/current_weather_card.dart';
 import '../widgets/hourly_forecast_list.dart';
 import '../widgets/daily_forecast_section.dart';
-import 'search_screen.dart'; 
+import 'search_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,18 +43,29 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const SettingsScreen(),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () => provider.refreshWeather(),
         child: Builder(
           builder: (context) {
-            // Trạng thái loading
             if (provider.state == WeatherState.loading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
+
             if (provider.state == WeatherState.error &&
                 provider.currentWeather == null) {
               return Center(
@@ -71,14 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            // Không có dữ liệu
             if (provider.currentWeather == null) {
               return const Center(
                 child: Text("Không có dữ liệu thời tiết"),
               );
             }
 
-            // UI chính
             return ListView(
               children: [
                 CurrentWeatherCard(weather: provider.currentWeather!),

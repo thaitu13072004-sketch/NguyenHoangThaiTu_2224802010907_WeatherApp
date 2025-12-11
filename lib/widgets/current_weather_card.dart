@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 
 import '../models/weather_model.dart';
+import '../providers/settings_provider.dart';
 
 class CurrentWeatherCard extends StatelessWidget {
   final WeatherModel weather;
@@ -11,6 +13,8 @@ class CurrentWeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.watch<SettingsProvider>();
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
@@ -35,40 +39,32 @@ class CurrentWeatherCard extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-
           const SizedBox(height: 4),
-
           Text(
             DateFormat('EEEE, MMM d').format(weather.dateTime),
             style: const TextStyle(color: Colors.white70),
           ),
-
           const SizedBox(height: 16),
-
           CachedNetworkImage(
             imageUrl:
                 "https://openweathermap.org/img/wn/${weather.icon}@4x.png",
             height: 100,
           ),
-
           Text(
-            "${weather.temperature.round()}°",
+            settings.formatTemperature(weather.temperature),
             style: const TextStyle(
-              fontSize: 64,
+              fontSize: 48,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-
           Text(
             weather.description.toUpperCase(),
             style: const TextStyle(color: Colors.white70),
           ),
-
           const SizedBox(height: 8),
-
           Text(
-            "Feels like ${weather.feelsLike.round()}°",
+            "Feels like ${settings.formatTemperature(weather.feelsLike)}",
             style: const TextStyle(color: Colors.white70),
           ),
         ],

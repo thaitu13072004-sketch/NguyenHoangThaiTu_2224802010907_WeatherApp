@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../models/forecast_model.dart';
+import 'package:provider/provider.dart';
 
-class HourlyForecastList extends StatelessWidget 
-{
+import '../models/forecast_model.dart';
+import '../providers/settings_provider.dart';
+
+class HourlyForecastList extends StatelessWidget {
   final List<ForecastModel> forecasts;
 
   const HourlyForecastList({super.key, required this.forecasts});
 
   @override
-  Widget build(BuildContext context) 
-  {
-    // Lấy khoảng 8–10 mốc đầu tiên (~24h)
+  Widget build(BuildContext context) {
+    final settings = context.watch<SettingsProvider>();
     final items = forecasts.take(8).toList();
 
     return SizedBox(
@@ -35,7 +35,7 @@ class HourlyForecastList extends StatelessWidget
               separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final f = items[index];
-                final time = DateFormat.Hm().format(f.dateTime);
+                final timeStr = settings.formatTime(f.dateTime);
 
                 return Container(
                   width: 70,
@@ -58,7 +58,7 @@ class HourlyForecastList extends StatelessWidget
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        time,
+                        timeStr,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -66,9 +66,9 @@ class HourlyForecastList extends StatelessWidget
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${f.temperature.round()}°",
+                        settings.formatTemperature(f.temperature),
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
